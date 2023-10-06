@@ -97,12 +97,38 @@ window.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('show');
         modal.classList.remove('hide');
         document.body.style.overflow = 'hidden';
-        const btn = modal.querySelector('button');
-        
+
+        const btn = modal.querySelector('button'),
+            form = modal.querySelector('form');
+
         // addEventListener
-        btn.addEventListener('click', (event) => {
+        btn.addEventListener('click', function bntEvent(event) {
             event.preventDefault();
+            const dataForm = new FormData(form),
+                thanksForm = document.createElement('div');
+
+            thanksForm.innerHTML = '';
+
+            fetch('/form', {
+                method: 'POST',
+                body: dataForm,
+            })
+                .then((response) => response.json())
+                .then((result) => {
+                    console.log(result);
+                    form.remove();
+                    modal.querySelector('.modal__content').innerHTML =
+                        '<h2>Спасибо. Мы скоро свяжемся с вами!</h2>';
+
+                    const timer = setTimeout(closeModal, 3000);
+                })
+                .catch((err) => {});
+            modal
+                .querySelector('.modal__content')
+                .insertAdjacentElement('afterBegin', form);
+            btn.removeEventListener('click', bntEvent);
         });
+        
     }
 
     function closeModal() {
@@ -200,6 +226,4 @@ window.addEventListener('DOMContentLoaded', function () {
         const item = Object.values(myObj[i]);
         new MenuItem(...item).render();
     }
-
-    
 });
