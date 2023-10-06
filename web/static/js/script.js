@@ -98,37 +98,41 @@ window.addEventListener('DOMContentLoaded', function () {
         modal.classList.remove('hide');
         document.body.style.overflow = 'hidden';
 
-        const btn = modal.querySelector('button'),
-            form = modal.querySelector('form');
+        const btn = modal.querySelector('button');
 
-        // addEventListener
-        btn.addEventListener('click', function bntEvent(event) {
-            event.preventDefault();
-            const dataForm = new FormData(form),
-                thanksForm = document.createElement('div');
+        btn.addEventListener('click', sendRequest);
+    }
 
-            thanksForm.innerHTML = '';
+    function sendRequest(event) {
+        event.preventDefault();
 
-            fetch('/form', {
-                method: 'POST',
-                body: dataForm,
+        const form = modal.querySelector('form'),
+            dataForm = new FormData(form),
+            modalContent = modal.querySelector('.modal__content'),
+            thanksModal = document.createElement('div');
+
+        thanksModal.innerHTML = '<h2>Скоро мы свяжемся с вами.</h2>';
+
+        fetch('/form', {
+            method: 'POST',
+            body: dataForm,
+        })
+            .then((response) => response.json())
+            .then((result) => {
+                form.remove();
+                modalContent.append(thanksModal);
+
+                console.log(result);
+
+                setTimeout(() => {
+                    closeModal();
+                    event.target.removeEventListener('click', sendRequest);
+                    thanksModal.remove();
+                    modalContent.append(form);
+                    form.reset();
+                }, 3000);
             })
-                .then((response) => response.json())
-                .then((result) => {
-                    console.log(result);
-                    form.remove();
-                    modal.querySelector('.modal__content').innerHTML =
-                        '<h2>Спасибо. Мы скоро свяжемся с вами!</h2>';
-
-                    const timer = setTimeout(closeModal, 3000);
-                })
-                .catch((err) => {});
-            modal
-                .querySelector('.modal__content')
-                .insertAdjacentElement('afterBegin', form);
-            btn.removeEventListener('click', bntEvent);
-        });
-        
+            .catch((err) => {});
     }
 
     function closeModal() {
