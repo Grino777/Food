@@ -107,16 +107,14 @@ window.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         const form = modal.querySelector('form'),
-            dataForm = new FormData(form),
+            // dataForm = new FormData(form),
+            dataForm = Object.fromEntries(new FormData(form).entries()),
             modalContent = modal.querySelector('.modal__content'),
             thanksModal = document.createElement('div');
 
         thanksModal.innerHTML = '<h2>Скоро мы свяжемся с вами.</h2>';
 
-        fetch('/form', {
-            method: 'POST',
-            body: dataForm,
-        })
+        postDataForm('http://localhost:3000/requests', dataForm)
             .then((response) => response.json())
             .then((result) => {
                 form.remove();
@@ -172,13 +170,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Menu
     class MenuItem {
-        constructor(img_path, alt, title, descr, price, parrentSelector) {
+        constructor(img_path, alt, title, descr, price) {
             this.img_path = img_path;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
-            this.parrentSelector = document.querySelector(parrentSelector);
+            this.parrentSelector = document.querySelector('.menu .container');
+            // this.parrentSelector = document.querySelector(parrentSelector);
         }
 
         render() {
@@ -199,35 +198,31 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const myObj = {
-        obj1: {
-            img_path: 'img/tabs/vegy.jpg',
-            alt: 'vegy',
-            title: 'Меню "Фитнес"',
-            descr: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-            price: 229,
-            parrentSelector: '.menu .container',
-        },
-        obj2: {
-            img_path: 'img/tabs/elite.jpg',
-            alt: 'elite',
-            title: 'Меню “Премиум”',
-            descr: 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-            price: 550,
-            parrentSelector: '.menu .container',
-        },
-        obj3: {
-            img_path: 'img/tabs/post.jpg',
-            alt: 'post',
-            title: 'Меню "Постное"',
-            descr: 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-            price: 430,
-            parrentSelector: '.menu .container',
-        },
-    };
+    async function getMenuItem(url) {
+        const res = await fetch(url);
 
-    for (let i in myObj) {
-        const item = Object.values(myObj[i]);
-        new MenuItem(...item).render();
+        if (!res.ok) {
+            throw new Error(`GET-запрос по адресу ${url} не отработал!`);
+        }
+
+        return await res.json();
     }
+
+    async function postDataForm(url, data) {
+        console.log(data);
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        return res;
+    }
+
+    getMenuItem('http://localhost:3000/menu').then((data) => {
+        data.forEach(({ img, altimg, title, descr, price }) => {
+            new MenuItem(img, altimg, title, descr, price).render();
+        });
+    });
 });
