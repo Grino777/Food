@@ -140,4 +140,4 @@ ex.txt
 q.txt
 
 #web
-web/node_modules
+web/static/node_modules

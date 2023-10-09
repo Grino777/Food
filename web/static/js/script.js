@@ -1,5 +1,7 @@
 'use strict';
 
+axios.defaults.baseURL = 'http://localhost:3000';
+
 window.addEventListener('DOMContentLoaded', function () {
     // Tabs
     let tabs = document.querySelectorAll('.tabheader__item'),
@@ -220,9 +222,19 @@ window.addEventListener('DOMContentLoaded', function () {
         return res;
     }
 
-    getMenuItem('http://localhost:3000/menu').then((data) => {
-        data.forEach(({ img, altimg, title, descr, price }) => {
-            new MenuItem(img, altimg, title, descr, price).render();
+    // getMenuItem('http://localhost:3000/menu').then((data) => {
+    //     data.forEach(({ img, altimg, title, descr, price }) => {
+    //         new MenuItem(img, altimg, title, descr, price).render();
+    //     });
+    // });
+
+    axios
+        .get('http://localhost:3000/menu')
+        .then((response) => response.data)
+        .then((data) => {
+            data.forEach((elem) => {
+                const res = Object.values(elem);
+                new MenuItem(...res).render();
+            });
         });
-    });
 });
