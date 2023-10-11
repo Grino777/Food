@@ -291,8 +291,10 @@ window.addEventListener('DOMContentLoaded', function () {
         if (target && target === sliderNext) {
             if (+sliderCounter.textContent <= +sliderTotal.textContent - 1) {
                 sliderCounter.textContent = `0${+sliderCounter.textContent + 1}`;
-                showSlide(+sliderCounter.textContent);
+            } else {
+                sliderCounter.textContent = `0${1}`;
             }
+            showSlide(+sliderCounter.textContent);
         }
     });
 
@@ -302,8 +304,10 @@ window.addEventListener('DOMContentLoaded', function () {
         if (target && target === sliderPrev) {
             if (+sliderCounter.textContent > 1) {
                 sliderCounter.textContent = `0${+sliderCounter.textContent - 1}`;
-                showSlide(+sliderCounter.textContent);
+            } else {
+                sliderCounter.textContent = `0${+sliderTotal.textContent }`;
             }
+            showSlide(+sliderCounter.textContent);
         }
     });
 });
