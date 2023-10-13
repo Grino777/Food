@@ -321,11 +321,12 @@ window.addEventListener('DOMContentLoaded', function () {
         current = document.querySelector('#current');
 
     let offset = 0,
-        slideCounter = 1;
+        slideCounter = 1,
+        dataLength = 0;
 
     current.textContent = `0${slideCounter}`;
 
-    let data = async () => {
+    const data = async () => {
         return await getSlidesBD();
     };
 
@@ -349,11 +350,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
     async function addSlidesInWindow() {
         const slides = await data();
+        dataLength = slides.length;
 
         slidesField.style.width = 100 * slides.length + '%';
         slidesField.style.display = 'flex';
         slidesField.style.transition = '0.5s all';
         wrapper.style.overflow = 'hidden';
+        
         document.querySelector('#total').textContent = `0${slides.length}`;
         slides.forEach((item) => createSliderElement(item));
     }
@@ -361,17 +364,31 @@ window.addEventListener('DOMContentLoaded', function () {
     addSlidesInWindow();
 
     next.addEventListener('click', () => {
-        offset -= width;
-        console.log(offset);
-        slideCounter += 1;
+        if (
+            offset > -(dataLength * width) &&
+            offset <= 0 &&
+            slideCounter < dataLength
+        ) {
+            offset -= width;
+            slideCounter += 1;
+        } else if (dataLength == slideCounter) {
+            offset = 0;
+            slideCounter = 1;
+        }
+        console.log(offset, slideCounter);
         current.textContent = `0${slideCounter}`;
         slidesField.style.transform = `translateX(${offset}px)`;
     });
 
     prev.addEventListener('click', () => {
-        offset += width;
-        console.log(offset);
-        slideCounter -= 1;
+        if (offset == 0) {
+            offset = -(dataLength * width) + width;
+            slideCounter = dataLength;
+        } else {
+            offset += width;
+            slideCounter -= 1;
+        }
+        console.log(offset, slideCounter);
         current.textContent = `0${slideCounter}`;
         slidesField.style.transform = `translateX(${offset}px)`;
     });
