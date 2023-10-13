@@ -374,7 +374,6 @@ window.addEventListener('DOMContentLoaded', function () {
             offset = 0;
             slideCounter = 1;
         }
-        console.log(offset, slideCounter);
         current.textContent = `0${slideCounter}`;
         slidesField.style.transform = `translateX(${offset}px)`;
     });
@@ -387,7 +386,6 @@ window.addEventListener('DOMContentLoaded', function () {
             offset += width;
             slideCounter -= 1;
         }
-        console.log(offset, slideCounter);
         current.textContent = `0${slideCounter}`;
         slidesField.style.transform = `translateX(${offset}px)`;
     });
