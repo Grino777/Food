@@ -340,7 +340,6 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     async function getSlidesBD(url = '/slider_imgs') {
-        console.log('Выполняется запрос');
         const response = await axios
             .get(url)
             .then((response) => response.data)
@@ -356,8 +355,8 @@ window.addEventListener('DOMContentLoaded', function () {
         slidesField.style.display = 'flex';
         slidesField.style.transition = '0.5s all';
         wrapper.style.overflow = 'hidden';
-        
-        document.querySelector('#total').textContent = `0${slides.length}`;
+
+        total.textContent = `0${slides.length}`;
         slides.forEach((item) => createSliderElement(item));
     }
 
