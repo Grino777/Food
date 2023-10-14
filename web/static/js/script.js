@@ -311,8 +311,14 @@ window.addEventListener('DOMContentLoaded', function () {
     //     }
     // });
 
-    //Slider 2
-    const slidesField = document.querySelector('.offer__slider-inner'),
+    // Update Slider 2
+
+    const data = axios
+            .get('/slider_imgs')
+            .then((response) => response.data)
+            .catch((err) => console.error(err.message)),
+        quantity = data.then((data) => data.length),
+        slidesField = document.querySelector('.offer__slider-inner'),
         wrapper = document.querySelector('.offer__slider-wrapper'),
         width = Number.parseInt(window.getComputedStyle(wrapper).width),
         next = document.querySelector('.offer__slider-next'),
@@ -321,14 +327,7 @@ window.addEventListener('DOMContentLoaded', function () {
         current = document.querySelector('#current');
 
     let offset = 0,
-        slideCounter = 1,
-        dataLength = 0;
-
-    current.textContent = `0${slideCounter}`;
-
-    const data = async () => {
-        return await getSlidesBD();
-    };
+        counter = 1;
 
     function createSliderElement(data) {
         const imgDiv = document.createElement('div');
@@ -339,54 +338,61 @@ window.addEventListener('DOMContentLoaded', function () {
         slidesField.append(imgDiv);
     }
 
-    async function getSlidesBD(url = '/slider_imgs') {
-        const response = await axios
-            .get(url)
-            .then((response) => response.data)
-            .catch((err) => console.log(err.message));
-        return response;
+    async function addSlidesOnPage(data) {
+        const slides = await data;
+        slides.forEach((elem) => createSliderElement(elem));
     }
 
-    async function addSlidesInWindow() {
-        const slides = await data();
-        dataLength = slides.length;
+    const checkDigit = async (digit) => {
+        let checkDigit = await digit;
+        if (checkDigit < 10) {
+            return `0${checkDigit}`;
+        } else {
+            return checkDigit;
+        }
+    };
 
-        slidesField.style.width = 100 * slides.length + '%';
+    const showSliderCounter = async () => {
+        total.textContent = await checkDigit(quantity);
+        current.textContent = await checkDigit(counter);
+    };
+
+    const setSlideField = async () => {
+        slidesField.style.width = 100 * (await quantity) + '%';
         slidesField.style.display = 'flex';
         slidesField.style.transition = '0.5s all';
         wrapper.style.overflow = 'hidden';
+    };
 
-        total.textContent = `0${slides.length}`;
-        slides.forEach((item) => createSliderElement(item));
-    }
-
-    addSlidesInWindow();
-
-    next.addEventListener('click', () => {
+    next.addEventListener('click', async () => {
         if (
-            offset > -(dataLength * width) &&
+            offset > -((await quantity) * width) &&
             offset <= 0 &&
-            slideCounter < dataLength
+            counter < (await quantity)
         ) {
             offset -= width;
-            slideCounter += 1;
-        } else if (dataLength == slideCounter) {
+            counter += 1;
+        } else if ((await quantity) == counter) {
             offset = 0;
-            slideCounter = 1;
+            counter = 1;
         }
-        current.textContent = `0${slideCounter}`;
+        current.textContent = await checkDigit(counter);
         slidesField.style.transform = `translateX(${offset}px)`;
     });
 
-    prev.addEventListener('click', () => {
+    prev.addEventListener('click', async () => {
         if (offset == 0) {
-            offset = -(dataLength * width) + width;
-            slideCounter = dataLength;
+            offset = -((await quantity) * width) + width;
+            counter = await quantity;
         } else {
             offset += width;
-            slideCounter -= 1;
+            counter -= 1;
         }
-        current.textContent = `0${slideCounter}`;
+        current.textContent = await checkDigit(counter);
         slidesField.style.transform = `translateX(${offset}px)`;
     });
+
+    showSliderCounter();
+    addSlidesOnPage(data);
+    setSlideField();
 });
