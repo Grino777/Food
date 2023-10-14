@@ -750,10 +750,14 @@ a {
     margin-right: 3px;
     margin-left: 3px;
     cursor: pointer;
-    background-color: #fff;
+    background-color: #ffffff86;
     background-clip: padding-box;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     opacity: .5;
     transition: opacity .6s ease;
+}
+
+.highlight {
+    background-color: #0077ff;
 }
