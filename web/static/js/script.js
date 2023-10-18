@@ -374,4 +374,40 @@ window.addEventListener('DOMContentLoaded', function () {
 
     createSliderCarousel();
     addSliderIndicators();
+
+    //Calculator
+
+    const calcFields = this.document.querySelectorAll('.calculating__choose div'),
+        target = this.document.querySelector('.calculating__field');
+
+    let sex, height, weight, age, ratio;
+
+    function addActiveClass(field) {
+        field.classList.add('calculating__choose-item_active');
+        // console.log(field);
+    }
+
+    function removeActiveClass(parrent) {
+        const fields = parrent.querySelectorAll('div');
+        fields.forEach((field) => {
+            field.classList.remove('calculating__choose-item_active');
+        });
+    }
+
+    // function trackChanges() {
+    //     if () {}
+    // }
+
+    // calcFields.forEach((field) => {
+    //     field.addEventListener('click', trackChanges)
+    // })
+
+    calcFields.forEach((field) => {
+        const parrent = field.parentElement;
+
+        field.addEventListener('click', () => {
+            removeActiveClass(parrent);
+            addActiveClass(field);
+        });
+    });
 });

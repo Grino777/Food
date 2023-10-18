@@ -4,7 +4,6 @@
     // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
         {
             "name": "Launch Program",
             "program": "${workspaceFolder}/web/static/js/test.js",
@@ -14,7 +13,6 @@
             ],
             "type": "node"
         },
-        
         {
             "name": "Python: Flask",
             "type": "python",
@@ -31,6 +29,15 @@
             ],
             "jinja": true,
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Json-server",
+            "program": "${workspaceFolder}/db.json",
+            "request": "launch",
+            "args": [
+                "npx json-server"
+            ],
+            "type": "node"
+        },
     ]
 }

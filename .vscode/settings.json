@@ -77,9 +77,6 @@
     "[css]": {
         "editor.defaultFormatter": "HookyQR.beautify"
     },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.autopep8"
-    },
     "extensions.autoUpdate": false,
     "python.analysis.typeCheckingMode": "basic",
     "editor.linkedEditing": true,
@@ -97,4 +94,8 @@
     "pylint.importStrategy": "fromEnvironment",
     "prettier.tabWidth": 4,
     "prettier.useTabs": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": true
+    }
 }

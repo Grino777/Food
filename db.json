@@ -1,5 +1,6 @@
 {
-  "menu": [{
+  "menu": [
+    {
       "img": "img/tabs/vegy.jpg",
       "altimg": "vegy",
       "title": "Меню 'Фитнес'",
@@ -21,7 +22,8 @@
       "price": 21
     }
   ],
-  "slider_imgs": [{
+  "slider_imgs": [
+    {
       "id": 0,
       "img": "img/slider/food-12.jpg",
       "alt": "food"
@@ -40,7 +42,18 @@
       "id": 3,
       "img": "img/slider/pepper.jpg",
       "alt": "pepper"
+    },
+    {
+      "id": 4,
+      "img": "img/slider/pepper.jpg",
+      "alt": "pepper"
     }
   ],
-  "requests": []
+  "requests": [
+    {
+      "name": "sad",
+      "phone": "asdfas",
+      "id": 1
+    }
+  ]
 }
