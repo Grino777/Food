@@ -238,81 +238,14 @@ window.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-    //Slider
+    // Update Slider 2
 
-    // const slider = this.document.querySelector('.offer__slider'),
-    //     counter = slider.querySelector('.offer__slider-counter'),
-    //     wrapper = slider.querySelector('.offer__slider-wrapper'),
-    //     sliderCounter = counter.querySelector('#current'),
-    //     sliderTotal = slider.querySelector('#total'),
-    //     sliderNext = counter.querySelector('.offer__slider-next'),
-    //     sliderPrev = counter.querySelector('.offer__slider-prev');
-
-    // function createSliderElement(data) {
-    //     const imgDiv = document.createElement('div');
-    //     imgDiv.classList.add('offer__slide');
-    //     imgDiv.setAttribute('data-num', `${data.id + 1}`);
-    //     imgDiv.innerHTML = `<img src="${data.img}" alt="${data.alt}" />`;
-    //     wrapper.append(imgDiv);
-    // }
-
-    // function hideSlider() {
-    //     const imgs = wrapper.querySelectorAll('.offer__slide');
-    //     imgs.forEach((img) => {
-    //         img.classList.add('hide');
-    //         img.classList.remove('show');
-    //     });
-    // }
-
-    // function showSlide(id = 1) {
-    //     const img = wrapper.querySelector(`[data-num="${id}"]`);
-    //     hideSlider();
-    //     img.classList.add('show');
-    // }
-
-    // axios
-    //     .get('/slider_imgs')
-    //     .then((response) => response.data)
-    //     .then((data) => {
-    //         data.forEach((elem, n) => {
-    //             createSliderElement(elem);
-    //             return data;
-    //         });
-    //         sliderTotal.textContent = `0${data.length}`;
-    //         hideSlider();
-    //         showSlide(+sliderCounter.textContent);
-    //     })
-    //     .catch((err) => console.log(err))
-    //     .finally();
-
-    // sliderNext.addEventListener('click', function plus(event) {
-    //     const target = event.currentTarget;
-
-    //     if (target && target === sliderNext) {
-    //         if (+sliderCounter.textContent <= +sliderTotal.textContent - 1) {
-    //             sliderCounter.textContent = `0${+sliderCounter.textContent + 1}`;
-    //         } else {
-    //             sliderCounter.textContent = `0${1}`;
-    //         }
-    //         showSlide(+sliderCounter.textContent);
-    //     }
-    // });
-
-    // sliderPrev.addEventListener('click', function minus(event) {
-    //     const target = event.currentTarget;
-
-    //     if (target && target === sliderPrev) {
-    //         if (+sliderCounter.textContent > 1) {
-    //             sliderCounter.textContent = `0${+sliderCounter.textContent - 1}`;
-    //         } else {
-    //             sliderCounter.textContent = `0${+sliderTotal.textContent }`;
-    //         }
-    //         showSlide(+sliderCounter.textContent);
-    //     }
-    // });
-
-    //Slider 2
-    const slidesField = document.querySelector('.offer__slider-inner'),
+    const data = axios
+            .get('/slider_imgs')
+            .then((response) => response.data)
+            .catch((err) => console.error(err.message)),
+        quantity = data.then((data) => data.length),
+        slidesField = document.querySelector('.offer__slider-inner'),
         wrapper = document.querySelector('.offer__slider-wrapper'),
         width = Number.parseInt(window.getComputedStyle(wrapper).width),
         next = document.querySelector('.offer__slider-next'),
@@ -321,13 +254,7 @@ window.addEventListener('DOMContentLoaded', function () {
         current = document.querySelector('#current');
 
     let offset = 0,
-        slideCounter = 1;
-
-    current.textContent = `0${slideCounter}`;
-
-    let data = async () => {
-        return await getSlidesBD();
-    };
+        counter = 1;
 
     function createSliderElement(data) {
         const imgDiv = document.createElement('div');
@@ -338,42 +265,150 @@ window.addEventListener('DOMContentLoaded', function () {
         slidesField.append(imgDiv);
     }
 
-    async function getSlidesBD(url = '/slider_imgs') {
-        console.log('Выполняется запрос');
-        const response = await axios
-            .get(url)
-            .then((response) => response.data)
-            .catch((err) => console.log(err.message));
-        return response;
+    async function addSlidesOnPage(data) {
+        const slides = await data;
+        slides.forEach((elem) => createSliderElement(elem));
     }
 
-    async function addSlidesInWindow() {
-        const slides = await data();
+    const checkDigit = async (digit) => {
+        let checkDigit = await digit;
+        if (checkDigit < 10) {
+            return `0${checkDigit}`;
+        } else {
+            return checkDigit;
+        }
+    };
 
-        slidesField.style.width = 100 * slides.length + '%';
+    const showSliderCounter = async () => {
+        total.textContent = await checkDigit(quantity);
+        current.textContent = await checkDigit(counter);
+        highlightIndicator(counter);
+    };
+
+    const setSlideField = async () => {
+        slidesField.style.width = 100 * (await quantity) + '%';
         slidesField.style.display = 'flex';
         slidesField.style.transition = '0.5s all';
         wrapper.style.overflow = 'hidden';
-        document.querySelector('#total').textContent = `0${slides.length}`;
-        slides.forEach((item) => createSliderElement(item));
-    }
+    };
 
-    addSlidesInWindow();
-
-    next.addEventListener('click', () => {
-        offset -= width;
-        console.log(offset);
-        slideCounter += 1;
-        current.textContent = `0${slideCounter}`;
+    next.addEventListener('click', async () => {
+        if (
+            offset > -((await quantity) * width) &&
+            offset <= 0 &&
+            counter < (await quantity)
+        ) {
+            offset -= width;
+            counter += 1;
+        } else if ((await quantity) == counter) {
+            offset = 0;
+            counter = 1;
+        }
+        current.textContent = await checkDigit(counter);
         slidesField.style.transform = `translateX(${offset}px)`;
+        highlightIndicator(counter);
     });
 
-    prev.addEventListener('click', () => {
-        offset += width;
-        console.log(offset);
-        slideCounter -= 1;
-        current.textContent = `0${slideCounter}`;
+    prev.addEventListener('click', async () => {
+        if (offset == 0) {
+            offset = -((await quantity) * width) + width;
+            counter = await quantity;
+        } else {
+            offset += width;
+            counter -= 1;
+        }
+        current.textContent = await checkDigit(counter);
         slidesField.style.transform = `translateX(${offset}px)`;
+        highlightIndicator(counter);
+    });
+
+    showSliderCounter();
+    addSlidesOnPage(data);
+    setSlideField();
+
+    //Slider Carousel
+
+    function createSliderCarousel() {
+        const carousel = document.createElement('ol'),
+            offerSlider = document.querySelector('.offer__slider');
+
+        offerSlider.style.position = 'relative';
+        carousel.classList.add('carousel-indicators');
+        offerSlider.append(carousel);
+    }
+
+    async function addSliderIndicators() {
+        for (let i = 0; i < (await quantity); i++) {
+            const dot = document.createElement('li');
+            dot.classList.add('dot');
+            dot.setAttribute('data-number', i + 1);
+
+            dot.addEventListener('click', (event) => {
+                const target = event.target,
+                    number = +target.getAttribute('data-number');
+
+                highlightIndicator(number);
+            });
+
+            document.querySelector('.carousel-indicators').append(dot);
+        }
+    }
+
+    function removeHighlight() {
+        const indicators = document.querySelectorAll(`[data-number]`);
+        indicators.forEach((indicator) => {
+            indicator.classList.remove('highlight');
+        });
+    }
+
+    async function highlightIndicator(slideNumber) {
+        removeHighlight();
+        const indicator = document.querySelector(`[data-number="${slideNumber}"]`);
+        indicator.classList.add('highlight');
+
+        offset = -((slideNumber - 1) * width);
+        counter = slideNumber;
+        current.textContent = await checkDigit(slideNumber);
+        slidesField.style.transform = `translateX(${offset}px)`;
+    }
+
+    createSliderCarousel();
+    addSliderIndicators();
+
+    //Calculator
+
+    const calcFields = this.document.querySelectorAll('.calculating__choose div'),
+        target = this.document.querySelector('.calculating__field');
+
+    let sex, height, weight, age, ratio;
+
+    function addActiveClass(field) {
+        field.classList.add('calculating__choose-item_active');
+        // console.log(field);
+    }
+
+    function removeActiveClass(parrent) {
+        const fields = parrent.querySelectorAll('div');
+        fields.forEach((field) => {
+            field.classList.remove('calculating__choose-item_active');
+        });
+    }
+
+    // function trackChanges() {
+    //     if () {}
+    // }
+
+    // calcFields.forEach((field) => {
+    //     field.addEventListener('click', trackChanges)
+    // })
+
+    calcFields.forEach((field) => {
+        const parrent = field.parentElement;
+
+        field.addEventListener('click', () => {
+            removeActiveClass(parrent);
+            addActiveClass(field);
+        });
     });
 
     //Calculator
