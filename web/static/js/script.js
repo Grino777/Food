@@ -378,13 +378,34 @@ window.addEventListener('DOMContentLoaded', function () {
     //Calculator
 
     const calcFields = this.document.querySelectorAll('.calculating__choose div'),
-        target = this.document.querySelector('.calculating__field');
+        calcRes = this.document.querySelector('.calculating__result span'),
+        inputsData = this.document.querySelectorAll('.calculating__choose input');
 
-    let sex, height, weight, age, ratio;
+    let sex = 'female',
+        height,
+        weight,
+        age,
+        ratio = 1.25;
+
+    const calcData = {
+        sex: sex,
+        height: height,
+        weight: weight,
+        age: age,
+        ratio: ratio,
+    };
 
     function addActiveClass(field) {
         field.classList.add('calculating__choose-item_active');
-        // console.log(field);
+        getData(field);
+    }
+
+    function getData(elem) {
+        const key = Object.keys(elem.dataset)[0];
+        if (key) {
+            calcData[key] = elem.dataset[key];
+        }
+        console.log(calcData);
     }
 
     function removeActiveClass(parrent) {
@@ -394,13 +415,34 @@ window.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // function trackChanges() {
-    //     if () {}
-    // }
+    function getCalcData() {
+        let res;
 
-    // calcFields.forEach((field) => {
-    //     field.addEventListener('click', trackChanges)
-    // })
+        if (!sex || !height || !weight || !age || !ratio) {
+            res = '____';
+            return;
+        }
+
+        if (sex == 'male') {
+            res = 88.36 + 13.4 * weight + 4.8 * height - 5.7 * age;
+        } else if (sex == 'female') {
+            res = 447.6 + 9.2 * weight + 3.1 * height - 4.3 * age;
+        }
+        calcRes.textContent = res;
+    }
+
+    function getInputData(elem) {
+        const key = Object.values(elem.dataset)[0];
+        if (calcData.hasOwnProperty(key)) {
+            const value = +elem.value;
+            if (value) {
+                calcData[key] = +elem.value;
+            } else {
+                calcData[key] = undefined;
+                elem.value = '';
+            }
+        }
+    }
 
     calcFields.forEach((field) => {
         const parrent = field.parentElement;
@@ -408,6 +450,15 @@ window.addEventListener('DOMContentLoaded', function () {
         field.addEventListener('click', () => {
             removeActiveClass(parrent);
             addActiveClass(field);
+            getCalcData(field);
         });
     });
+
+    inputsData.forEach((elem) => {
+        elem.addEventListener('change', () => {
+            getInputData(elem);
+        });
+    });
+
+    getCalcData();
 });
