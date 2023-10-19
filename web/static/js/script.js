@@ -410,32 +410,4 @@ window.addEventListener('DOMContentLoaded', function () {
             addActiveClass(field);
         });
     });
-
-    //Calculator
-
-    // const calcFields = this.document.querySelectorAll('.calculating__choose-item');
-    const calcFields = this.document.querySelectorAll(
-        'calculating__field div.calculating__choose'
-    );
-
-    function clearFielsFromDiv(selector) {
-        // console.log(`.${selector.split(' ').join('.')}`);
-        const fields = document.querySelectorAll(`.${selector.split(' ').join('.')}`);
-        console.log(fields);
-        // fields.forEach((elem) => {
-        //     elem.classList.remove('calculating__choose-item_active');
-        // });
-    }
-
-    function addActiveClass(elem) {
-        elem.classList.add('calculating__choose-item_active');
-    }
-
-    calcFields.forEach((item) => {
-        const parrentSelector = item.parentElement.getAttribute('class');
-        item.addEventListener('click', (event) => {
-            clearFielsFromDiv(parrentSelector);
-            addActiveClass(event.target);
-        });
-    });
 });
