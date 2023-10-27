@@ -398,16 +398,26 @@ window.addEventListener('DOMContentLoaded', function () {
         calculate();
     }
 
+    function checkInputValue(field) {
+        if (field.value.match(/\D/g)) {
+            field.style.border = '1px solid red';
+        }
+        else {
+            field.style.border = 'none';
+            return +field.value
+        }
+    }
+
     function getInputData(field) {
         switch (field.getAttribute('id')) {
             case 'height':
-                height = +field.value;
+                height = checkInputValue(field);
                 break;
             case 'weight':
-                weight = +field.value;
+                weight = checkInputValue(field);
                 break;
             case 'age':
-                age = +field.value;
+                age = checkInputValue(field);
                 break;
         }
 
