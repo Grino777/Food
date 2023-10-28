@@ -1,7 +1,7 @@
 function modal() {
     // Modal
-    const btns = this.document.querySelectorAll('.btn'),
-        modal = this.document.querySelector('.modal'),
+    const btns = document.querySelectorAll('.btn'),
+        modal = document.querySelector('.modal'),
         btnClose = modal.querySelector('.modal__close');
 
     function showModal() {
@@ -80,4 +80,4 @@ function modal() {
     document.addEventListener('scroll', showModalByScroll);
 }
 
-module.exports = modal;
+export default modal;

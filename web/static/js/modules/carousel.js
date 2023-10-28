@@ -49,4 +49,4 @@ function carousel() {
     addSliderIndicators();
 }
 
-module.exports = carousel;
+export default carousel;

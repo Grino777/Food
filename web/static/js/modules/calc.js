@@ -7,9 +7,9 @@ function calc() {
         age,
         ratio = 1.375;
 
-    const calcFields = this.document.querySelectorAll('.calculating__choose div'),
-        calcRes = this.document.querySelector('.calculating__result span'),
-        inputsData = this.document.querySelectorAll('.calculating__choose input');
+    const calcFields = document.querySelectorAll('.calculating__choose div'),
+        calcRes = document.querySelector('.calculating__result span'),
+        inputsData = document.querySelectorAll('.calculating__choose input');
 
     function getDivData(field) {
         if (field.dataset['ratio']) {
@@ -96,4 +96,4 @@ function calc() {
     });
 }
 
-module.exports = calc;
+export default calc;

@@ -1,15 +1,15 @@
 'use strict';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+import calc from './modules/calc';
+import carousel from './modules/carousel';
+import menu from './modules/menu';
+import modal from './modules/modal';
+import slider from './modules/slider';
+import tabs from './modules/tabs';
+import timer from './modules/timer';
 
 window.addEventListener('DOMContentLoaded', function () {
-    const calc = require('./modules/calc'),
-        carousel = require('./modules/carousel'),
-        menu = require('./modules/menu'),
-        modal = require('./modules/modal'),
-        slider = require('./modules/slider'),
-        tabs = require('./modules/tabs'),
-        timer = require('./modules/timer');
+    axios.defaults.baseURL = 'http://localhost:3000';
 
     calc();
     carousel();
